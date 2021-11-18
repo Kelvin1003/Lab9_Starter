@@ -86,22 +86,118 @@
       <button>Trigger a Global Error</button>
     </section>
   </main>
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+  <script>
+    window.TrackJS && TrackJS.install({
+      token: "8bb821f72c0544f7b3c6796b9db5b5a4"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+  </script>
 
   <script>
-    let form = document.querySelector('form');
-    form.addEventListener('submit', e => {
-      e.preventDefault();
-      let output = document.querySelector('output');
-      let firstNum = document.querySelector('#first-num').value;
-      let secondNum = document.querySelector('#second-num').value;
-      let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
-    });
+    // TrackJS.track('Testing TrackJS!');
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
 
     // Start your code here
     // You may move this JS to another file if you wish
+    let logButton = errorBtns[0];
+    logButton.addEventListener('click', () => { console.log('Console Log Demo'); });
+
+    let errorButton = errorBtns[1];
+    errorButton.addEventListener('click', () => { console.error('Console Error Demo'); });
+
+    let countButton = errorBtns[2];
+    countButton.addEventListener('click', () => { console.count('Count Button'); });
+
+    let warnButton = errorBtns[3];
+    warnButton.addEventListener('click', () => { console.warn('Console Warn Button'); });
+
+    let assertButton = errorBtns[4];
+    assertButton.addEventListener('click', () => {
+      const number = 2;
+      const errorMsg = 'The number does not equal 3';
+      console.assert(number == 3, { number, errorMsg });
+    });
+
+    let clearButton = errorBtns[5];
+    clearButton.addEventListener('click', () => { console.clear(); });
+
+    let dirButton = errorBtns[6];
+    dirButton.addEventListener('click', () => { console.dir(dirButton); });
+
+    let dirxmlButton = errorBtns[7];
+    dirxmlButton.addEventListener('click', () => { console.dirxml(dirxmlButton); });
+
+    let groupStartButton = errorBtns[8];
+    const label = 'console.group';
+    groupStartButton.addEventListener('click', () => { console.group(label); });
+
+    let groupEndButton = errorBtns[9];
+    groupEndButton.addEventListener('click', () => { console.groupEnd(); });
+
+    let tableButton = errorBtns[10];
+    tableButton.addEventListener('click', () => {
+      console.table([
+        {
+          name: 'Software Engineer',
+          num: 110,
+        },
+        {
+          name: 'Programming Language',
+          num: 130,
+        },
+        {
+          name: 'Advanced Software',
+          num: 112,
+        }
+      ]);
+    });
+
+    let timerButton = errorBtns[11];
+    timerButton.addEventListener('click', () => { console.time('Timer Button'); });
+
+    let timerEndButton = errorBtns[12];
+    timerEndButton.addEventListener('click', () => { console.timeEnd('Timer Button'); });
+
+    let traceButton = errorBtns[13];
+    const deep = () => { deeper(); };
+    const deeper = () => { deepest(); };
+    const deepest = () => { console.trace(); };
+    traceButton.addEventListener('click', function handleBtnClick() { deep(); });
+
+    let triggerButton = errorBtns[14];
+    triggerButton.addEventListener('click', () => { trigger });
+
+
+    let form = document.querySelector('form');
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      let output = document.querySelector('output');
+      let firstNum = Number(document.querySelector('#first-num').value);
+      let secondNum = Number(document.querySelector('#second-num').value);
+      let operator = document.querySelector('#operator').value;
+      try {
+        if (isNaN(firstNum) == true) { throw new IsNumberError('The first number is not a valid number'); }
+        if (isNaN(secondNum) == true) { throw new IsNumberError('The second number is not a valid number'); }
+        output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      } catch (error) {
+        console.warn(`Error name: ${error.name}`);
+        console.warn(`Error message: ${error.message}`);
+      } finally {
+        console.log('Calculate done. If there are errors, they have been shown above.')
+      }
+    });
+
+
+    class IsNumberError extends Error {
+      constructor(message) {
+        super(message);
+        this.name = "IsNumberError";
+      }
+    }
+    // Used above
+
   </script>
 </body>
 
